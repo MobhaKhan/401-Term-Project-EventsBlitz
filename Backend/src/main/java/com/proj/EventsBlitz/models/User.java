@@ -1,4 +1,6 @@
+// src/main/java/com/sample/example/model/User.java
 package com.proj.EventsBlitz.models;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -31,7 +33,7 @@ public class User {
 
     @Override
     public String toString() {
-        return UserID + " -> " + UserName + " -> " + UserAddress + " -> " + Email + " -> " + UserType;
+        return UserID + " -> " + UserName + " -> " + UserAddress + " -> " + Email + " -> " + UserType + "\n";
     }
 
     public String getUserType() {
