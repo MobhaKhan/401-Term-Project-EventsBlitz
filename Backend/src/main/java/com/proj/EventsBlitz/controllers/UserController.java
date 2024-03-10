@@ -136,4 +136,9 @@ public class UserController {
         userService.deleteAdmin(id);
     }
 
+    @DeleteMapping("/deleteGuestUser/{id}")
+    public void deleteGuestUser(@PathVariable int id) {
+        userService.deleteGuestUser(id);
+    }
+
 }
