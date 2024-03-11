@@ -77,7 +77,7 @@ public class UserService {
         return response;
     }
 
-    public User createRegisteredUser(User user, String password, String creditCard, boolean monthlyPromotionNews, boolean airportLoungeDiscount, int companionTicketCount) {
+    public User createRegisteredUser(User user, String password, String creditCard) {
         User savedUser = userRepository.save(user);
 
         // Check if the user is of type 'Registered'
@@ -88,9 +88,6 @@ public class UserService {
             // Set other fields as needed
 
             registeredUser.setCreditCardNumber(creditCard);
-            registeredUser.setMonthlyPromotionNews(monthlyPromotionNews);
-            registeredUser.setAirportLoungeDiscount(airportLoungeDiscount);
-            registeredUser.setCompanionTicketCount(companionTicketCount);
 
             registeredUserRepository.save(registeredUser);
         }

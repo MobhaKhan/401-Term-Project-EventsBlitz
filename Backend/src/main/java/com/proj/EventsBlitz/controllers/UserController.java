@@ -88,13 +88,10 @@ public class UserController {
         //For registered users
         String password = jsonNode.get("password").asText();
         String creditCard = jsonNode.get("creditCard").asText();
-        boolean monthlyPromotionNews = jsonNode.get("monthlyPromotionNews").asBoolean();
-        boolean airportLoungeDiscount = jsonNode.get("airportLoungeDiscount").asBoolean();
-        int companionTicketCount = jsonNode.get("companionTicketCount").asInt();
 
         User user = new User(username, address, email, type);
 
-        return userService.createRegisteredUser(user, password, creditCard, monthlyPromotionNews, airportLoungeDiscount, companionTicketCount);
+        return userService.createRegisteredUser(user, password, creditCard);
     }
 
     @PostMapping("/createAdmin")

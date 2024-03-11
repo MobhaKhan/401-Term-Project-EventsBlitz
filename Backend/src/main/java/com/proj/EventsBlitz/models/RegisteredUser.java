@@ -16,31 +16,21 @@ public class RegisteredUser {
     private String Pwd_RegisteredUser;
     @Column(name = "CreditCardNumber", nullable = false)
     private String CreditCardNumber;
-    @Column(name = "MonthlyPromotionNews", nullable = false)
-    private boolean MonthlyPromotionNews;
-    @Column(name = "AirportLoungeDiscount", nullable = false)
-    private boolean AirportLoungeDiscount;
-    @Column(name = "CompanionTicketCount", nullable = false)
-    private int CompanionTicketCount;
 
     public RegisteredUser() {
 
     }
 
-    public RegisteredUser(int userID, String pwd_RegisteredUser, String creditCardNumber, boolean monthlyPromotionNews, boolean airportLoungeDiscount, int companionTicketCount) {
+    public RegisteredUser(int userID, String pwd_RegisteredUser, String creditCardNumber) {
         UserID = userID;
         Pwd_RegisteredUser = pwd_RegisteredUser;
         CreditCardNumber = creditCardNumber;
-        MonthlyPromotionNews = monthlyPromotionNews;
-        AirportLoungeDiscount = airportLoungeDiscount;
-        CompanionTicketCount = companionTicketCount;
     }
 
     @Override
     public String toString() {
         return RegisteredUserID + " -> " + UserID + " -> " + Pwd_RegisteredUser + " -> "
-                + CreditCardNumber + " -> " + MonthlyPromotionNews + " -> "
-                + AirportLoungeDiscount + " -> " + CompanionTicketCount;
+                + CreditCardNumber;
     }
 
     public void setUserID(int userID) {
@@ -53,18 +43,6 @@ public class RegisteredUser {
 
     public void setCreditCardNumber(String defaultCreditCard) {
         this.CreditCardNumber = defaultCreditCard;
-    }
-
-    public void setMonthlyPromotionNews(boolean b) {
-        this.MonthlyPromotionNews = b;
-    }
-
-    public void setAirportLoungeDiscount(boolean b) {
-        this.AirportLoungeDiscount = b;
-    }
-
-    public void setCompanionTicketCount(int i) {
-        this.CompanionTicketCount = i;
     }
 
 }
