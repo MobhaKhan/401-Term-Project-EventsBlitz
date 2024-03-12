@@ -2,10 +2,10 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import Home from './components/Home';
-// import SearchEvents from './components/SearchEvents';
+import SearchEvents from './components/SearchEvents';
 import Login from './components/Login';
 // import BookingForm from './components/BookingForm';
-// import MyAccount from './components/myAccount';
+
 import background from './assets/background.jpeg'
 // import AdminPage from './components/AdminPage';
 
@@ -81,13 +81,13 @@ const App = () => {
           backgroundPosition: 'center center',
         }}>
           <Routes>
-            {/* <Route path="/search" element={<SearchEvents />} /> */}
+            <Route path="/search" element={<SearchEvents />} />
 
             <Route path="/login" element={<Login />} />
 
             {/* <Route path="/booking/detail" element={<BookingForm />} /> */}
 
-            {/* <Route path="/myaccount" element={<MyAccount />} /> */}
+
 
             {/* <Route path="/admin" element={<AdminPage />} /> */}
 
