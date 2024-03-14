@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
 
 const SearchEvents = () => {
@@ -7,7 +6,6 @@ const SearchEvents = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchEvents();
@@ -48,7 +46,7 @@ const SearchEvents = () => {
             <div className="container-lg p-5 mt-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', overflowY: 'auto', maxHeight: '600px' }}>
                 {events.map((event) => (
                     <div className="card" key={event.eventID} onClick={() => handleEventClick(event)} style={{ cursor: 'pointer' }}>
-                        <img src={event.image_url} className="card-img-top" alt={event.eventName} style={{ objectFit: 'cover', height: '200px' }} />
+                        <img src={event.imageUrl} className="card-img-top" alt={event.eventName} style={{ objectFit: 'cover', height: '200px' }} />
                         <div className="card-body">
                             <h5 className="card-title">{event.eventName}</h5>
                             <p className="card-text">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
@@ -66,15 +64,17 @@ const SearchEvents = () => {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <img src={selectedEvent.image_url} alt={selectedEvent.eventName} style={{ width: '100%', height: 'auto', marginBottom: '10px' }} />
-                                <h5 className="text-center">{selectedEvent.eventName}</h5>
-                                <p>{selectedEvent.eventDescription}</p>
-                                <p>Date: {new Date(selectedEvent.eventDate).toLocaleDateString()}</p>
-                                <p>Time: {selectedEvent.eventTime}</p>
-                                <p>Location: {selectedEvent.eventLocation}</p>
-                                <p>Ticket Price: {selectedEvent.ticketPrice}</p>
-                                <p>Total Tickets: {selectedEvent.totalTickets}</p>
-                                <p>Available Tickets: {selectedEvent.availableTickets}</p>
+                                <img src={selectedEvent.imageUrl} alt={selectedEvent.eventName} style={{ width: '100%', height: 'auto', marginBottom: '10px' }} />
+                                <h5 className="text-center"><span style={{ fontWeight: 'bold', color: 'purple' }}>{selectedEvent.eventName}</span></h5>
+                                <p style={{ lineHeight: '1.5' }}>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Description: </span>{selectedEvent.eventDescription}<br/>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Date: </span>{new Date(selectedEvent.eventDate).toLocaleDateString()}<br/>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Time: </span>{selectedEvent.eventTime}<br/>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Location: </span>{selectedEvent.eventLocation}<br/>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Ticket Price: </span>{selectedEvent.ticketPrice}<br/>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Total Tickets: </span>{selectedEvent.totalTickets}<br/>
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Available Tickets: </span>{selectedEvent.availableTickets}
+                                </p>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 package com.proj.EventsBlitz.models;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -38,6 +39,9 @@ public class Event {
 
     @Column(name = "available_tickets", nullable = false)
     private int availableTickets;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     // Getters and Setters
     public int getEventID() {
@@ -118,5 +122,13 @@ public class Event {
 
     public void setAvailableTickets(int availableTickets) {
         this.availableTickets = availableTickets;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
