@@ -94,14 +94,15 @@ CREATE TABLE Event (
     ticket_price DECIMAL(10, 2) NOT NULL,
     total_tickets INT NOT NULL,
     available_tickets INT NOT NULL,
+    image_url VARCHAR(500),  
     FOREIGN KEY (organizer_id) REFERENCES User(UserID)
 );
 
 -- Inserting Event data
-INSERT INTO Event (organizer_id, event_name, event_description, event_date, event_time, event_location, ticket_price, total_tickets, available_tickets) VALUES
-(2, 'Tech Summit', 'Annual tech conference', '2024-05-15', '09:00:00', 'Convention Center', 100.00, 500, 500),
-(3, 'Music Festival', 'Three-day music extravaganza', '2024-07-20', '17:00:00', 'Outdoor Arena', 75.00, 1000, 1000),
-(4, 'Art Exhibition', 'Showcasing modern art pieces', '2024-06-10', '10:00:00', 'Art Gallery', 50.00, 200, 200);
+INSERT INTO Event (organizer_id, event_name, event_description, event_date, event_time, event_location, ticket_price, total_tickets, available_tickets, image_url) VALUES
+(1, 'Tech Summit', 'Annual tech conference showcasing the latest advancements in technology and innovation. Join us for insightful talks, networking opportunities, and more.', '2024-05-15', '09:00:00', 'Convention Center', 100.00, 500, 500, 'https://news.microsoft.com/wp-content/uploads/prod/sites/427/2017/02/1DX20184.jpg'),
+(2, 'Music Festival', 'Experience three days of non-stop music and entertainment at our annual music festival. Featuring top artists from around the world, food vendors, and fun activities for all ages.', '2024-07-20', '17:00:00', 'Outdoor Arena', 75.00, 1000, 1000, 'https://a.cdn-hotels.com/gdcs/production109/d1730/0e79ce94-530b-408e-af0f-6550f61d621c.jpg'),
+(3, 'Art Exhibition', 'Discover the beauty of modern art at our art exhibition. Explore a diverse collection of contemporary artworks, meet the artists, and immerse yourself in creativity.', '2024-06-10', '10:00:00', 'Art Gallery', 50.00, 200, 200, 'https://freshmindmag.com/wp-content/uploads/2023/04/pexels-darya-sannikova-1671014.jpg');
 
 -- Create Seat Table
 DROP TABLE IF EXISTS Seat;

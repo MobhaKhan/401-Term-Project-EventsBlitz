@@ -4,32 +4,40 @@ import api from '../api/axiosConfig';
 
 const SearchEvents = () => {
     const [events, setEvents] = useState([]);
-    const [selectedEvent, setSelectedEvent] = useState(null); // Define selectedEvent state
-    const [apiResponse, setApiResponse] = useState('');
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
-
-    const fetchEvents = async () => {
-        try {
-            const response = await api.get('/events/getAllEvents');
-            setEvents(response.data);
-            setApiResponse(JSON.stringify(response.data, null, 2));
-            console.log(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     useEffect(() => {
         fetchEvents();
     }, []);
 
-    const handleEventClick = (event) => {
-        if (sessionStorage.getItem('isAuthenticated') === 'true') {
-            setSelectedEvent(event); // Now this function call is valid as setSelectedEvent is defined
-            navigate('/event/detail', { state: { event: event } });
-        } else {
-            navigate('/login');
+    const fetchEvents = async () => {
+        try {
+            const response = await api.get('/events/getAllEvents');
+            setEvents(response.data);
+            setLoading(false);
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
         }
+    };
+
+    const handleEventClick = (event) => {
+        setSelectedEvent(event);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedEvent(null);
+    };
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
     }
 
     return (
@@ -37,22 +45,41 @@ const SearchEvents = () => {
             <div className="container-lg bg-primary-subtle rounded-4">
                 <h2 className="text-center p-5">Search Events</h2>
             </div>
-            <div className="container-lg bg-warning-subtle rounded-4 p-5 mt-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', overflowY: 'auto', maxHeight: '600px' }}>
+            <div className="container-lg p-5 mt-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', overflowY: 'auto', maxHeight: '600px' }}>
                 {events.map((event) => (
-                    <div className="card" key={event.id} onClick={() => handleEventClick(event)} style={{ cursor: 'pointer' }}>
-                        <img src={event.image} className="card-img-top" alt={event.title} style={{ objectFit: 'cover', height: '200px' }} />
+                    <div className="card" key={event.eventID} onClick={() => handleEventClick(event)} style={{ cursor: 'pointer' }}>
+                        <img src={event.image_url} className="card-img-top" alt={event.eventName} style={{ objectFit: 'cover', height: '200px' }} />
                         <div className="card-body">
-                            <h5 className="card-title">{event.title}</h5>
-                            <p className="card-text">{event.description}</p>
-                            <p className="card-text"><small className="text-muted">Date: {event.date}</small></p>
+                            <h5 className="card-title">{event.eventName}</h5>
+                            <p className="card-text">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
                         </div>
                     </div>
                 ))}
             </div>
-            <div className="container-lg mt-4">
-                <h3 className="text-center">API Response</h3>
-                <pre style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '5px' }}>{apiResponse}</pre>
-            </div>
+            {selectedEvent && (
+                <div className="modal fade show" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" onClick={handleCloseModal}>
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <img src={selectedEvent.image_url} alt={selectedEvent.eventName} style={{ width: '100%', height: 'auto', marginBottom: '10px' }} />
+                                <h5 className="text-center">{selectedEvent.eventName}</h5>
+                                <p>{selectedEvent.eventDescription}</p>
+                                <p>Date: {new Date(selectedEvent.eventDate).toLocaleDateString()}</p>
+                                <p>Time: {selectedEvent.eventTime}</p>
+                                <p>Location: {selectedEvent.eventLocation}</p>
+                                <p>Ticket Price: {selectedEvent.ticketPrice}</p>
+                                <p>Total Tickets: {selectedEvent.totalTickets}</p>
+                                <p>Available Tickets: {selectedEvent.availableTickets}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
