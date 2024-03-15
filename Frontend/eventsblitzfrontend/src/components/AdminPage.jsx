@@ -1,5 +1,6 @@
+// AdminPage.js
 import React from 'react';
-
+import SearchEvents from './SearchEvents';
 
 const AdminPage = () => {
     const titleStyle = {
@@ -14,13 +15,20 @@ const AdminPage = () => {
         marginTop: '20px',
     };
 
+    const handleCreateEvent = () => {
+        // Logic to handle creation of event
+        console.log("Creating event...");
+    };
+
+    const handleDeleteEvent = (event) => {
+        // Logic to handle deletion of event
+        console.log("Deleting event:", event);
+    };
+
     return (
         <div className="bg-white rounded-5 p-3">
             <h1>Admin Page</h1>
-            <div class="text-center p-5">
-            <h1 style={titleStyle}>This is the Admin page</h1>
-            <p style={subtitleStyle}>This is the Admin page!</p>
-        </div>
+            <SearchEvents isAdmin={true} onCreateEvent={handleCreateEvent} onDeleteEvent={handleDeleteEvent} />
         </div>
     );
 };

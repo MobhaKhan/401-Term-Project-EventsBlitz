@@ -12,10 +12,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EventID")
     private int eventID;
-
-    @Column(name = "organizer_id", nullable = false)
-    private int organizerId;
-
+    
     @Column(name = "event_name", nullable = false)
     private String eventName;
 
@@ -50,14 +47,6 @@ public class Event {
 
     public void setEventID(int eventID) {
         this.eventID = eventID;
-    }
-
-    public int getOrganizerId() {
-        return organizerId;
-    }
-
-    public void setOrganizerId(int organizerId) {
-        this.organizerId = organizerId;
     }
 
     public String getEventName() {
