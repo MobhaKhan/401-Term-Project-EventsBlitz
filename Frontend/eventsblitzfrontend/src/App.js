@@ -4,11 +4,8 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Login from './components/Login';
-
-// import BookingForm from './components/BookingForm';
-
+import BookingForm from './components/BookingForm';
 import background from './assets/background.jpeg'
-
 import AdminPage from './components/AdminPage';
 
 //if user is logged in, show logout button
@@ -87,16 +84,10 @@ const App = () => {
         }}>
           <Routes>
             <Route path="/search" element={<SearchEvents />} />
-
             <Route path="/login" element={<Login />} />
-
-            {/* <Route path="/booking/detail" element={<BookingForm />} /> */}
-
-
-
+            <Route path="/booking/detail" element={<BookingForm />} />
             <Route path="/AdminPage" element={<AdminPage />} />
             <Route path="/Home" element={<Home />} />
-
             <Route path="/" element={<Home />} 
             />
           </Routes>

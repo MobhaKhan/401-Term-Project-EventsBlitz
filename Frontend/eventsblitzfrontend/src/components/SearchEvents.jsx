@@ -1,8 +1,12 @@
 // SearchEvents.js
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import { Alert } from 'react-bootstrap';
 
 const SearchEvents = ({ isAdmin, onCreateEvent }) => {
+    const navigate = useNavigate();
+    const [showLoginAlert, setShowLoginAlert] = useState(false);
     const [events, setEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -39,8 +43,21 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
         setSelectedEvent(event);
     };
 
+    const navigateToBooking = (event) => {
+        navigate('/booking/detail', { state: { event: event } });
+    };
+
+    const handleBookEventClick = () => {
+        if (sessionStorage.getItem('isAuthenticated') === 'true') {
+            navigateToBooking(selectedEvent);
+        } else {
+            setShowLoginAlert(true);
+        }
+    };
+
     const handleCloseModal = () => {
         setSelectedEvent(null);
+        setShowLoginAlert(false);
     };
 
     const handleCreateEvent = () => {
@@ -201,6 +218,10 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Total Tickets: </span>{selectedEvent.totalTickets}<br />
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Available Tickets: </span>{selectedEvent.availableTickets}
                                 </p>
+                                <div className="text-center">
+                                    {showLoginAlert && <Alert variant="danger" className="mt-3">You must login first!</Alert>}
+                                    <button className="btn btn-primary" onClick={handleBookEventClick}>Book Event</button>
+                                </div>
                             </div>
                         </div>
                     </div>
