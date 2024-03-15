@@ -1,11 +1,12 @@
 // AdminLogin.jsx
 import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Alert } from 'react-bootstrap';
 import api from '../api/axiosConfig';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -15,24 +16,38 @@ const AdminLogin = () => {
         setPassword(e.target.value);
     }
 
+    const validateEmail = (email) => {
+        // Simple regex for basic email validation
+        return /\S+@\S+\.\S+/.test(email);
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!validateEmail(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
         try {
             const response = await api.post('/users/loginAdmin', { email, password });
             if (response.data.userID) {
                 sessionStorage.setItem('userID', response.data.userID);
                 sessionStorage.setItem('isAuthenticated', true);
                 sessionStorage.setItem('email', email);
-                sessionStorage.setItem('type', 'Admin')
+                sessionStorage.setItem('type', 'Admin');
                 window.location.href = '/';
+            } else {
+                // Handle case where login is unsuccessful but no exception is thrown
+                setError("Invalid login. Please try again.");
             }
         } catch (error) {
-            console.log(error);
+            setError("Invalid login. Please try again.");
+            console.error(error);
         }
     }
 
     return (
         <Form className="container-fluid" onSubmit={handleLogin}>
+            {error && <Alert variant="danger">{error}</Alert>}
             <Form.Group className="row justify-content-lg-center">
                 <Form.Label className="col col-sm-2">Email:</Form.Label>
                 <Form.Control className="col col-sm-2" type="email" value={email} onChange={handleEmailChange} />

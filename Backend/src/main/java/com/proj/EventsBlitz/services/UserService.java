@@ -29,8 +29,14 @@ public class UserService {
         Map<String, String> response = new HashMap<>();
 
         User user = userRepository.findByUserEmail(email);
-
+        
         if (user != null) {
+            // Check if the user is of type 'Guest'
+            if ("Guest".equals(user.getUserType())) {
+                response.put("error", "This is a guest user");
+                return response;
+            }
+
             boolean valid = registeredUserRepository.checkPasswordForUser(user.getUserID(), password);
 
             Cookie cookie;
