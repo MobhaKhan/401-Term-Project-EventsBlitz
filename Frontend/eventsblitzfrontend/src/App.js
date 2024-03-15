@@ -62,7 +62,7 @@ const App = () => {
                 </li>
                 {isAdmin &&
                   <li class="nav-item">
-                    <Link class="nav-link" to="/admin">Admin</Link>
+                    <Link class="nav-link" to="/AdminPage">Admin</Link>
                   </li>
                 }
 
