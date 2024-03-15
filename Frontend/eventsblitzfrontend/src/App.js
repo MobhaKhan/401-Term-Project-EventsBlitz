@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Login from './components/Login';
+
 // import BookingForm from './components/BookingForm';
 
 import background from './assets/background.jpeg'
-// import AdminPage from './components/AdminPage';
+
+import AdminPage from './components/AdminPage';
 
 //if user is logged in, show logout button
 const App = () => {
@@ -50,7 +52,7 @@ const App = () => {
             <div class="" id="navbarNav">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <Link class="nav-link" to="/">Home</Link>
+                <Link class="nav-link" to="/">Home</Link>
                 </li>
                 <li class="nav-item">
                   <Link class="nav-link" to="/search">Search Events</Link>
@@ -89,9 +91,11 @@ const App = () => {
 
 
 
-            {/* <Route path="/admin" element={<AdminPage />} /> */}
+            <Route path="/AdminPage" element={<AdminPage />} />
+            <Route path="/Home" element={<Home />} />
 
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home />} 
+            />
           </Routes>
         </div>
       </div>
