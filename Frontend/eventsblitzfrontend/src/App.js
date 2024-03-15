@@ -56,16 +56,19 @@ const App = () => {
                 </li>
                 <li class="nav-item">
                   <Link class="nav-link" to="/search">Search Events</Link>
-                </li>
-                <li class="nav-item">
-                  <Link class="nav-link" to={loggedIn ? "/myaccount" : "/login"}>{loggedIn ? "My Account" : "Login"}</Link>
-                </li>
-                {isAdmin &&
-                  <li class="nav-item">
-                    <Link class="nav-link" to="/AdminPage">Admin</Link>
                   </li>
-                }
-
+                  <li className="nav-item">
+                    {!isAdmin && (
+                      <Link className="nav-link" to={loggedIn ? "/myaccount" : "/login"}>
+                        {loggedIn ? "My Account" : "Login"}
+                      </Link>
+                    )}
+                  </li>
+                  {isAdmin && (
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/AdminPage">Admin</Link>
+                    </li>
+                  )}
                 {loggedIn &&
                   <li class="nav-item">
                     <Link class="nav-link" to="/" onClick={logout}>Logout</Link>

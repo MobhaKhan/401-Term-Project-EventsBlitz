@@ -82,12 +82,14 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
         if (confirmDelete) {
             try {
                 await api.delete(`/events/${eventId}`);
+                setSelectedEvent(null); // Reset selectedEvent state
                 fetchEvents(); // Refresh the events list after deleting an event
             } catch (error) {
                 console.error('Error deleting event:', error);
             }
         }
     };
+    
 
     if (loading) {
         return <p>Loading...</p>;
