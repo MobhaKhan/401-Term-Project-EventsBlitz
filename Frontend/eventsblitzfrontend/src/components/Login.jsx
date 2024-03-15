@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-// import api from '../api/axiosConfig';
-// import AirlineAgentLogin from './AirlineAgentLogin'; // Import the AirlineAgentLogin component
-// import AdminLogin from './AdminLogin';
+import api from '../api/axiosConfig'
 import axios from 'axios'; // Import axios library for making HTTP requests
 
 const Login = () => {
@@ -11,7 +9,6 @@ const Login = () => {
     const [username, setUsername] = useState(''); // New state variable for username
     const [address, setAddress] = useState('');
     const [creditCard, setCreditCard] = useState(''); // New state variable for credit card
-    const [newsletter, setNewsletter] = useState(false); // New state variable for newsletter
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isGuest, setIsGuest] = useState(false); // New state variable for guest login
@@ -21,6 +18,35 @@ const Login = () => {
 
     const [showAdminLogin, setShowAdminLogin] = useState(false);
     const [loginResponse, setLoginResponse] = useState(null); // Variable to store login response data
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const handleUsernameChange = (e) => {
+        setUsername(e.target.value);
+    }
+
+    const handleAddressChange = (e) => {
+        setAddress(e.target.value);
+    }
+
+    const handleCreditCardChange = (e) => {
+        setCreditCard(e.target.value);
+    }
+
+    const handleRegister = async () => {
+        if (isAuthenticated) {
+            alert("You are already logged in!");
+            return;
+        }
+        setShowRegistrationModal(true); // Show the registration modal when the "Register" button is clicked
+    }
+
     const handleAdminLogin = async (email, password) => {
         try {
             console.log('Inputted Email:', email);
@@ -30,11 +56,11 @@ const Login = () => {
             const adminsResponse = await axios.get('http://127.0.0.1:8080/api/admins/getAllAdmins');
             const usersResponse = await axios.get('http://127.0.0.1:8080/api/users/getAllUsers');
     
-        // Parse response from admins API call
-const adminsData = adminsResponse.data.split(', ').map(admin => {
-    const fields = admin.split(' -> ').map(field => field.trim());
-    return { AdminID: fields[0].replace('Admin ID: ', ''), UserID: fields[1].replace('User ID: ', ''), Pwd_Admin: fields[2].replace('Admin Password: ', '').slice(0, -1) };
-});
+            // Parse response from admins API call
+            const adminsData = adminsResponse.data.split(', ').map(admin => {
+                const fields = admin.split(' -> ').map(field => field.trim());
+                return { AdminID: fields[0].replace('Admin ID: ', ''), UserID: fields[1].replace('User ID: ', ''), Pwd_Admin: fields[2].replace('Admin Password: ', '').slice(0, -1) };
+            });
 
     
             // Parse response from users API call
@@ -170,6 +196,33 @@ const adminsData = adminsResponse.data.split(', ').map(admin => {
         }
     };
 
+    const handleConfirmRegistration = async () => {
+        try {
+            const response = await api.post('/users/createRegisteredUser', {
+                username: username,
+                email: email,
+                address: address,
+                type: 'Registered',
+                password: password,
+                creditCard: creditCard
+            });
+
+            if (response.status === 200) {
+                console.log('Registration successful!');
+                sessionStorage.setItem('userID', response.data.userID);
+                //set the session storage variable to true
+                sessionStorage.setItem('isAuthenticated', true);
+                //set the session storage variable for the user's email
+                sessionStorage.setItem('email', email);
+                sessionStorage.setItem('type', 'Registered')
+                //redirect to home page
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // Handle registration button click
     const handleRegistration = () => {
         setShowRegistrationModal(true);
@@ -216,21 +269,20 @@ const adminsData = adminsResponse.data.split(', ').map(admin => {
                     <div className="col-md-6" style={{...columnStyle, ...borderRightStyle}}>
                     <Form>
     <Form.Group controlId="formEmail" className="mb-3">
-        <Form.Label>faria here Email</Form.Label>
         <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
     </Form.Group>
     <Form.Group controlId="formPassword" className="mb-3">
         <Form.Label>Password</Form.Label>
         <Form.Control type="password" placeholder="Enter password" value={password} onChange={e => setPassword(e.target.value)} />
     </Form.Group>
-    <Button variant="primary" onClick={() => handleLogin(email, password)}>Sign in as Registered User</Button>
+    <Button variant="secondary" onClick={() => handleLogin(email, password)}>Sign in</Button>
     <Button variant="secondary" onClick={() => handleAdminLogin(email, password)} style={buttonStyle}>Sign in as Admin</Button>
 </Form>
 
                     </div>
                     <div className="col-md-6 text-center" style={columnStyle}>
                         <h4>Sign up for free!</h4>
-                        <Button variant="success" style={buttonStyle}>Register</Button>
+                        <Button variant="success" style={buttonStyle} onClick={handleRegister}>Register</Button>
                     </div>
                 </div>
 
@@ -243,33 +295,30 @@ const adminsData = adminsResponse.data.split(', ').map(admin => {
                         <Form>
                             <Form.Group controlId="formEmail">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control type="email" placeholder="Enter email" value={email} onChange={() => {}} />
+                                <Form.Control type="email" placeholder="Enter email" value={email} onChange={handleEmailChange} />
                             </Form.Group>
                             <Form.Group controlId="formUsername">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control type="text" placeholder="Enter username" value={username} onChange={() => {}} />
+                                <Form.Control type="text" placeholder="Enter username" value={username} onChange={handleUsernameChange} />
                             </Form.Group>
                             <Form.Group controlId="formPassword">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="Enter password" value={password} onChange={() => {}} />
+                                <Form.Control type="password" placeholder="Enter password" value={password} onChange={handlePasswordChange} />
                             </Form.Group>
                             <Form.Group controlId="formAddress">
                                 <Form.Label>Address</Form.Label>
-                                <Form.Control type="text" placeholder="Enter address" value={address} onChange={() => {}} />
+                                <Form.Control type="text" placeholder="Enter address" value={address} onChange={handleAddressChange} />
                             </Form.Group>
                             <Form.Group controlId="formCreditCard">
                                 <Form.Label>Credit Card</Form.Label>
-                                <Form.Control type="text" placeholder="Enter credit card" value={creditCard} onChange={() => {}} />
-                            </Form.Group>
-                            <Form.Group controlId="formNewsletter">
-                                <Form.Check type="checkbox" label="Subscribe to our newsletter" value={newsletter} onChange={() => {}} />
+                                <Form.Control type="text" placeholder="Enter credit card" value={creditCard} onChange={handleCreditCardChange} />
                             </Form.Group>
 
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => setShowRegistrationModal(false)}>Close</Button>
-                        <Button variant="primary" onClick={() => {}}>Confirm</Button>
+                        <Button variant="primary" onClick={handleConfirmRegistration}>Confirm</Button>
                     </Modal.Footer>
                 </Modal>
 
