@@ -7,6 +7,7 @@ import Login from './components/Login';
 import BookingForm from './components/BookingForm';
 import background from './assets/background.jpeg'
 import AdminPage from './components/AdminPage';
+import MyAccount from './components/MyAccount'; // Import the MyAccount component
 
 //if user is logged in, show logout button
 const App = () => {
@@ -84,6 +85,8 @@ const App = () => {
         }}>
           <Routes>
             <Route path="/search" element={<SearchEvents />} />
+            <Route path="/myaccount" element={<MyAccount />} /> 
+
             <Route path="/login" element={<Login />} />
             <Route path="/booking/detail" element={<BookingForm />} />
             <Route path="/AdminPage" element={<AdminPage />} />

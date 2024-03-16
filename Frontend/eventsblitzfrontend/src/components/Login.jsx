@@ -51,26 +51,69 @@ const Login = () => {
         setShowRegistrationModal(true); // Show the registration modal when the "Register" button is clicked
     }
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        if (!validateEmail(email)) {
-            setError("Please enter a valid email address.");
-            return;
-        }
+    const handleLogin = async () => {
         try {
-            // Send a POST request to the server with the user's email and password
-            const response = await api.post('/users/loginRegisteredUser', { email, password });
-            //check if response is 200
-            //if invalid, the response will be {error: "User not found"}
-            if (response.data.userID) {
+            // Make the first API call to get all users
+            const usersResponse = await api.get('/users/getAllUsers');
+            // Make the second API call to get all registered users
+            const registeredUsersResponse = await api.get('/registeredUsers/getAllRegisteredUsers');
+
+            // Process response from the first API call
+            let allUsersData = [];
+            if (typeof usersResponse.data === 'string') {
+                const usersEntries = usersResponse.data.split(', ');
+                allUsersData = usersEntries.map(entry => {
+                    const fields = entry.split(' -> ').map(field => field.replace(/[\[\]]/g, '').trim());
+                    return { UserID: fields[0], UserName: fields[1], UserAddress: fields[2], Email: fields[3], UserType: fields[4] };
+                });
+            } else {
+                console.error('Invalid response data format for all users:', usersResponse.data);
+                // Handle the error accordingly
+            }
+
+            // Process response from the second API call
+            const registeredUsersEntries = registeredUsersResponse.data.split(', ');
+            const registeredUsersData = registeredUsersEntries.map(entry => {
+                const fields = entry.split(' -> ').map(field => field.replace(/[\[\]]/g, '').trim());
+                return { RegisteredUserID: fields[0], UserID: fields[1], Password: fields[2], CreditCardNumber: fields[3] };
+            });
+
+            // Add additional fields from registeredUsers to allUsers
+            allUsersData.forEach(user => {
+                const registeredUserData = registeredUsersData.find(registeredUser => registeredUser.UserID === user.UserID);
+                if (registeredUserData) {
+                    user.RegisteredUserID = registeredUserData.RegisteredUserID;
+                    user.Password = registeredUserData.Password;
+                    user.CreditCardNumber = registeredUserData.CreditCardNumber;
+                }
+            });
+
+            // Filter allUsers to include only users with UserType "Registered"
+            const registeredUsersOnly = allUsersData.filter(user => user.UserType === 'Registered');
+
+            // Combine data from both responses
+            const combinedData = {
+                allUsers: registeredUsersOnly,
+            };
+
+            // Check if the entered email and password match any user's credentials
+            const matchedUser = registeredUsersOnly.find(user => user.Email === email && user.Password === password);
+            if (matchedUser) {
+                // Display success popup
+                console.log(JSON.stringify(combinedData));
                 setIsAuthenticated(true);
-                console.log('Login successful!');
-                sessionStorage.setItem('userID', response.data.userID);
                 //set the session storage variable to true
                 sessionStorage.setItem('isAuthenticated', true);
                 //set the session storage variable for the user's email
                 sessionStorage.setItem('email', email);
                 sessionStorage.setItem('type', 'Registered')
+                sessionStorage.setItem('username', matchedUser.UserName); // Set username in session storage
+                sessionStorage.setItem('userID', matchedUser.UserID); // Set user ID in session storage
+
+                console.log('Email:', email);
+                console.log('User Type:', 'Registered');
+                console.log('Username:', matchedUser.UserName);
+                
                 //redirect to home page
                 window.location.href = '/';
             } else {
@@ -80,7 +123,7 @@ const Login = () => {
             setError("Invalid login. Please try again.");
             console.error(error);
         }
-    }
+    };
 
     const handleConfirmRegistration = async () => {
         try {
