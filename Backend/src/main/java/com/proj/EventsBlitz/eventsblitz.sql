@@ -115,16 +115,63 @@ CREATE TABLE Seat (
 
 -- Inserting Seat data
 INSERT INTO Seat (SeatNumber, EventID, SeatType, Price) VALUES
+-- Seats for Event 1
 ('A1', 1, 'Regular', 50.00),
-('B2', 1, 'Regular', 50.00),
+('A2', 1, 'Regular', 50.00),
+('A3', 1, 'Regular', 50.00),
+('A4', 1, 'Regular', 50.00),
+('A5', 1, 'Regular', 50.00),
+('A6', 1, 'Regular', 50.00),
+('B1', 1, 'Comfort', 75.00),
+('B2', 1, 'Comfort', 75.00),
+('B3', 1, 'Comfort', 75.00),
+('B4', 1, 'Comfort', 75.00),
+('B5', 1, 'Comfort', 75.00),
+('B6', 1, 'Comfort', 75.00),
+('C1', 1, 'Business-Class', 100.00),
+('C2', 1, 'Business-Class', 100.00),
 ('C3', 1, 'Business-Class', 100.00),
-('D4', 1, 'Business-Class', 100.00),
-('E5', 2, 'Regular', 75.00),
-('F6', 2, 'Regular', 75.00),
-('G7', 2, 'Regular', 75.00),
-('H8', 3, 'Regular', 60.00),
-('I9', 3, 'Regular', 60.00),
-('J10', 3, 'Regular', 60.00);
+('C4', 1, 'Business-Class', 100.00),
+('C5', 1, 'Business-Class', 100.00),
+('C6', 1, 'Business-Class', 100.00),
+-- Seats for Event 2
+('D1', 2, 'Regular', 50.00),
+('D2', 2, 'Regular', 50.00),
+('D3', 2, 'Regular', 50.00),
+('D4', 2, 'Regular', 50.00),
+('D5', 2, 'Regular', 50.00),
+('D6', 2, 'Regular', 50.00),
+('E1', 2, 'Comfort', 75.00),
+('E2', 2, 'Comfort', 75.00),
+('E3', 2, 'Comfort', 75.00),
+('E4', 2, 'Comfort', 75.00),
+('E5', 2, 'Comfort', 75.00),
+('E6', 2, 'Comfort', 75.00),
+('F1', 2, 'Business-Class', 100.00),
+('F2', 2, 'Business-Class', 100.00),
+('F3', 2, 'Business-Class', 100.00),
+('F4', 2, 'Business-Class', 100.00),
+('F5', 2, 'Business-Class', 100.00),
+('F6', 2, 'Business-Class', 100.00),
+-- Seats for Event 3
+('G1', 3, 'Regular', 50.00),
+('G2', 3, 'Regular', 50.00),
+('G3', 3, 'Regular', 50.00),
+('G4', 3, 'Regular', 50.00),
+('G5', 3, 'Regular', 50.00),
+('G6', 3, 'Regular', 50.00),
+('H1', 3, 'Comfort', 75.00),
+('H2', 3, 'Comfort', 75.00),
+('H3', 3, 'Comfort', 75.00),
+('H4', 3, 'Comfort', 75.00),
+('H5', 3, 'Comfort', 75.00),
+('H6', 3, 'Comfort', 75.00),
+('I1', 3, 'Business-Class', 100.00),
+('I2', 3, 'Business-Class', 100.00),
+('I3', 3, 'Business-Class', 100.00),
+('I4', 3, 'Business-Class', 100.00),
+('I5', 3, 'Business-Class', 100.00),
+('I6', 3, 'Business-Class', 100.00);
 
 -- Create Booking Table
 DROP TABLE IF EXISTS Booking;
@@ -143,10 +190,10 @@ CREATE TABLE Booking (
 
 -- Inserting Booking data
 INSERT INTO Booking (UserID, EventID, SeatNumber, InsuranceSelected, PaymentAmount, IsCancelled) VALUES
-(1, 1, 'A1', TRUE, 50.00, FALSE),
-(2, 1, 'C3', FALSE, 100.00, TRUE),
-(3, 2, 'E5', TRUE, 75.00, FALSE),
-(4, 3, 'H8', FALSE, 60.00, FALSE);
+(1, 1, 'A1', TRUE, 150.00, FALSE),
+(2, 1, 'C3', FALSE, 200.00, TRUE),
+(3, 2, 'E5', TRUE, 150.00, FALSE),
+(4, 3, 'H6', FALSE, 125.00, FALSE);
 
 -- Table for storing ticket information
 CREATE TABLE tickets (
@@ -162,6 +209,6 @@ CREATE TABLE tickets (
 
 -- Inserting tickets data
 INSERT INTO tickets (EventID, UserID, ticket_quantity, total_price) VALUES
-(1, 1, 1, 50.00),
-(2, 2, 2, 150.00),
-(3, 3, 1, 60.00);
+(1, 1, 1, 150.00),
+(2, 3, 2, 150.00),
+(3, 4, 1, 125.00);

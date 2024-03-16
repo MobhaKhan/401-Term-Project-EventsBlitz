@@ -2,25 +2,39 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../api/axiosConfig';
-import { Container, Row, Col, Button, Alert, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col, Button, Modal, Form } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { BsCheckCircle } from 'react-icons/bs';
 
 const BookingForm = () => {
     const location = useLocation();
     const event = location.state.event;
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [bookedSeats, setBookedSeats] = useState([]);
     const [seats, setSeats] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [showModal, setShowModal] = useState(false);
     const [creditCard, setCreditCard] = useState('');
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    }
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    }
+    const [expiryDate, setExpiryDate] = useState(new Date());
+  
+    const CustomDateInput = ({ value, onClick }) => (
+        <button
+            className="example-custom-input"
+            onClick={onClick}
+            style={{
+            border: '1px solid #ced4da',
+            padding: '.375rem .75rem',
+            borderRadius: '.25rem',
+            color: '#495057',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+            }}
+        >
+            {value}
+        </button>
+    );
 
     useEffect(() => {
         const fetchSeatsAndBookings = async () => {
@@ -60,11 +74,11 @@ const BookingForm = () => {
             alert('Please enter your credit card information.');
             return;
         }
-        //call the handleBooking function
-        handleCloseModal();
-
         e.preventDefault();
         setIsLoading(true); // Start loading
+        setShowPaymentModal(false); // Close payment modal
+        setShowConfirmationModal(true); // Open confirmation modal
+
         try {
             //create a booking for each selected seat
             for (const seatNumber of selectedSeats) {
@@ -87,48 +101,61 @@ const BookingForm = () => {
                 console.log(emailResponse);
 
             }
-            //redirect to the my account page
             setIsLoading(false);
-            window.location.href = '/myAccount';
         } catch (error) {
-            console.log(error);
+            console.log("Booking Error: ",error);
             setIsLoading(false); // End loading
         }
     }
 
+    // Function to redirect to the My Account page
+    const redirectToMyAccount = () => {
+        window.location.href = '/myAccount';
+    };
+
     const renderSeats = () => {
+        // Define the maximum number of seats per row
+        const maxSeatsPerRow = 6; // Assuming we want 10 seats per row
+      
         // Sort the seats by their seat numbers
         const sortedSeats = [...seats].sort((a, b) => a.seatNumber.localeCompare(b.seatNumber));
-
-        // Group the seats by the number part of the seat number
-        const seatRows = sortedSeats.reduce((rows, seat) => {
-            const numberPart = seat.seatNumber.match(/\d+/)[0];
-            if (!rows[numberPart]) {
-                rows[numberPart] = [];
-            }
-            rows[numberPart].push(seat);
-            return rows;
-        }, {});
-
-        // For each group, create a row and within each row, create a column for each seat
-        return Object.values(seatRows).map((rowSeats, rowIndex) => (
-            <Row key={rowIndex} className="mb-2">
-                {rowSeats.map(seat => (
-                    <Col key={seat.seatNumber} xs={1}> 
-                        <button
-                            type="button"
-                            className={`btn btn-sm ${selectedSeats.includes(seat.seatNumber) ? 'btn-primary' : bookedSeats.includes(seat.seatNumber) ? 'btn-danger' : 'btn-secondary'}`}
-                            onClick={() => handleSeatClick(seat.seatNumber)}
-                            disabled={bookedSeats.includes(seat.seatNumber)} // This disables the button if the seat is booked
-                            style={{ margin: '0 4px' }}
-                        >
-                            {seat.seatNumber}
-                        </button>
-                    </Col>
+      
+        // Slice the array into subarrays of length maxSeatsPerRow
+        const seatChunks = [];
+        for (let i = 0; i < sortedSeats.length; i += maxSeatsPerRow) {
+          seatChunks.push(sortedSeats.slice(i, i + maxSeatsPerRow));
+        }
+      
+        // Define a consistent button size and margin
+        const buttonStyle = {
+          width: '50px', // Adjust width as necessary for your design
+          height: '50px', // Adjust height as necessary for your design
+          margin: '10px', // This will create space around each button
+        };
+      
+        // Map each chunk to a Row component
+        return (
+          <div className="seat-selection-grid">
+            <h3 className="text-center text-purple">Seat Selection</h3>
+            {seatChunks.map((chunk, index) => (
+              <div key={index} className="d-flex flex-wrap justify-content-center align-items-center">
+                {chunk.map(seat => (
+                  <button
+                    key={seat.seatNumber}
+                    type="button"
+                    className={`btn btn-sm ${selectedSeats.includes(seat.seatNumber) ? 'btn-primary' : bookedSeats.includes(seat.seatNumber) ? 'btn-danger' : 'btn-secondary'}`}
+                    onClick={() => handleSeatClick(seat.seatNumber)}
+                    disabled={bookedSeats.includes(seat.seatNumber)}
+                    style={buttonStyle}
+                  >
+                    {seat.seatNumber}
+                  </button>
                 ))}
-            </Row>
-        ));
-    }
+              </div>
+            ))}
+          </div>
+        );
+    } 
 
     return (
         <Container>
@@ -151,31 +178,74 @@ const BookingForm = () => {
                     </p>
                 </Col>
                 <Col md={6}>
-                    <h3 className="text-purple">Seat Selection</h3>
                     {renderSeats()}
                 </Col>
                 <hr style={{ width: '100%', borderColor: 'purple'}} />
                 <Row className="justify-content-center mt-3">
                     <Col className="text-center">
-                        <Button variant="primary" onClick={handleOpenModal}>Confirm Booking</Button>
+                        <Button variant="primary" onClick={() => setShowPaymentModal(true)}>Proceed to Payment</Button>
                     </Col>
                 </Row>
             </Row>
-
-            <Modal show={showModal} onHide={handleCloseModal}>
+            {/* Payment Modal */}
+            <Modal show={showPaymentModal} onHide={() => setShowPaymentModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Enter Credit Card Information</Modal.Title>
+                    <Modal.Title>Payment Information</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group>
-                            <Form.Label>Credit Card Number</Form.Label>
-                            <Form.Control type="text" value={creditCard} onChange={e => setCreditCard(e.target.value)} required />
+                    <Form.Group controlId="fullName" className="mb-3">
+                        <Form.Label>Full Name</Form.Label>
+                        <Form.Control type="text" required />
+                    </Form.Group>
+                    <Form.Group controlId="creditCardNumber" className="mb-3">
+                        <Form.Label>Credit Card Number</Form.Label>
+                        <Form.Control type="text" value={creditCard} onChange={e => setCreditCard(e.target.value)} required />
+                    </Form.Group>
+                    <Row>
+                        <Form.Group controlId="expiryDate" className="mb-3">
+                            <Form.Label>Expiry Date</Form.Label>
+                            <Col sm="8">
+                                <DatePicker
+                                    selected={expiryDate}
+                                    onChange={date => setExpiryDate(date)}
+                                    dateFormat="MM/yyyy"
+                                    showMonthYearPicker
+                                    customInput={<CustomDateInput />}
+                                    placeholderText="MM/YYYY"
+                                />
+                            </Col>
                         </Form.Group>
+                        <Col>
+                        <Form.Group controlId="cvv" className="mb-3">
+                            <Form.Label>CVV</Form.Label>
+                            <Form.Control type="text" required style={{ width: '80px' }}/>
+                        </Form.Group>
+                        </Col>
+                    </Row>
+                    <Form.Group controlId="cancellationInsurance" className="mb-3">
+                        <Form.Check type="checkbox" label="Would you like cancellation insurance?" />
+                    </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleBooking}>Confirm Booking</Button>
+                    <Button variant="primary" onClick={handleBooking} disabled={isLoading}>
+                        Confirm Booking
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* Booking Confirmation Modal */}
+            <Modal show={showConfirmationModal} onHide={() => setShowConfirmationModal(false)}>
+                <Modal.Body className="text-center">
+                    <h4>Thank you for your purchase!</h4>
+                    <div className="my-3">
+                        <BsCheckCircle color="green" size={32} className="me-2" />
+                        <span>Your payment has been confirmed.</span>
+                    </div>
+                    <p>Your ticket is ready to view in your account page and email confirmation has also been sent.</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={redirectToMyAccount}>Go to My Account</Button>
                 </Modal.Footer>
             </Modal>
         </Container>
