@@ -18,6 +18,7 @@ const BookingForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [creditCard, setCreditCard] = useState('');
     const [expiryDate, setExpiryDate] = useState(new Date());
+    const [insuranceSelected, setInsuranceSelected] = useState(false);
   
     const CustomDateInput = ({ value, onClick }) => (
         <button
@@ -86,7 +87,7 @@ const BookingForm = () => {
                     userID: parseInt(sessionStorage.getItem('userID')),
                     eventID: event.eventID,
                     seatNumber: seatNumber,
-                    insuranceSelected: false,
+                    insuranceSelected: insuranceSelected,
                     paymentAmount: seats.find(seat => seat.seatNumber === seatNumber).price,
                     isCancelled: false
                 });
@@ -224,7 +225,12 @@ const BookingForm = () => {
                         </Col>
                     </Row>
                     <Form.Group controlId="cancellationInsurance" className="mb-3">
-                        <Form.Check type="checkbox" label="Would you like cancellation insurance?" />
+                        <Form.Check 
+                            type="checkbox" 
+                            label="Would you like cancellation insurance?" 
+                            checked={insuranceSelected} 
+                            onChange={(e) => setInsuranceSelected(e.target.checked)} // Update state based on checkbox
+                        />
                     </Form.Group>
                     </Form>
                 </Modal.Body>
