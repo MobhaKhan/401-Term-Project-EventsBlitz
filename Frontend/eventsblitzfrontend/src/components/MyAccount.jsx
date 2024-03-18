@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import api from '../api/axiosConfig';
 
 const MyAccount = () => {
   // State variables to store user details, bookings, and events data
@@ -71,6 +72,13 @@ const MyAccount = () => {
       await axios.delete(`http://127.0.0.1:8080/api/bookings/${bookingID}`);
       // Update bookings state after deletion
       setBookings(prevBookings => prevBookings.filter(booking => booking.bookingID !== bookingID));
+      //send email confirmation
+      const emailResponse = await api.post('/mail', {
+        to: sessionStorage.getItem('email'),
+        subject: 'Event Booking Cancellation',
+        body: `Your booking number ${bookingID} has been cancelled.`
+      });
+      console.log(emailResponse);
       console.log('Booking canceled successfully.');
     } catch (error) {
       console.error('Error canceling booking:', error);
