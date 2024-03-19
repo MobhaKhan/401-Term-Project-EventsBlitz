@@ -144,12 +144,12 @@ const MyAccount = () => {
         <div className="col-md-6 mb-3">
           <h3 className="text-center">My Tickets</h3>
           <div className="tickets-list" style={{ overflowY: 'auto', maxHeight: '300px' }}>
-            {bookings.map((booking) => {
+            {bookings.map(booking => {
               const event = events.find(event => event.eventID === booking.eventID);
               return (
                 <div key={booking.bookingID} onClick={() => handleTicketClick(booking.bookingID)} style={{ background: 'white', margin: '10px', borderRadius: '5px', padding: '10px', cursor: 'pointer' }}>
-                  <h4 style={{ color: 'purple' }}>{event.eventName}</h4>
-                  <strong><p>{new Date(event.eventDate).toLocaleDateString()}</p></strong>
+                  <h4 style={{ color: 'purple' }}>{event ? event.eventName : 'N/A'}</h4>
+                  <strong><p>{event ? new Date(event.eventDate).toLocaleDateString() : 'N/A'}</p></strong>
                 </div>
               );
             })}
@@ -186,7 +186,7 @@ const MyAccount = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={() => handleDeleteBooking(selectedBooking.bookingID)} style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '5px' }}>Cancel Booking</button>
+            <button onClick={() => handleDeleteBooking(selectedBooking.bookingID, selectedBooking.eventName, new Date(selectedBooking.eventDate).toLocaleDateString())} style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '5px' }}>Cancel Booking</button>
           </Modal.Footer>
         </Modal>
       )}
