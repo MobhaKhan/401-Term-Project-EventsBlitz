@@ -145,7 +145,7 @@ const MyAccount = () => {
 
       <div className="row">
         <div className="col-md-6 mb-3">
-          <h3 className="text-center">My Tickets</h3>
+          <h3 className="text-center">My Bookings</h3>
           <div className="tickets-list" style={{ overflowY: 'auto', maxHeight: '300px' }}>
             {bookings.map(booking => {
               const event = events.find(event => event.eventID === booking.eventID);
@@ -178,7 +178,7 @@ const MyAccount = () => {
       {selectedBooking && (
         <Modal show={true} onHide={handleCloseModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Booking Details</Modal.Title>
+            <Modal.Title>Ticket</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div>
