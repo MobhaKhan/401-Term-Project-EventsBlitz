@@ -97,7 +97,11 @@ const BookingForm = () => {
                 const emailResponse = await api.post('/mail', {
                     to: sessionStorage.getItem('email'),
                     subject: 'Event Booking Confirmation',
-                    body: `Your booking for the ${event.eventName} event has been confirmed.`
+                    body: `Congratulations! Your booking for the ${event.eventName} event on ${new Date(event.eventDate).toLocaleDateString()} has been successfully 
+                    confirmed. We can't wait to welcome you to this thrilling event! Your payment of $${event.ticketPrice} has been processed.
+
+                    For additional details about the event, feel free to log into your EventsBlitz account and navigate to "My Account".
+                    Thank you for choosing EventsBlitz, and we look forward to providing you with an unforgettable experience!`                   
                 });
                 console.log(emailResponse);
 

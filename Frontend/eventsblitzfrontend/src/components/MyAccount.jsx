@@ -80,7 +80,7 @@ const MyAccount = () => {
     }
   }, [bookings, events]);
 
-  const handleDeleteBooking = async (bookingID, eventName, eventDate) => {
+  const handleDeleteBooking = async (bookingID, eventName, eventDate, ticketPrice) => {
     // Confirm cancellation with the user
     const confirmCancel = window.confirm(`Are you sure you want to cancel your ticket for ${eventName} on ${eventDate}?`);
     if (!confirmCancel) {
@@ -97,7 +97,9 @@ const MyAccount = () => {
       const emailResponse = await api.post('/mail', {
         to: sessionStorage.getItem('email'),
         subject: 'Event Booking Cancellation',
-        body: `Your booking number ${bookingID} has been cancelled.`
+        body: `Your booking for the ${eventName} event on ${eventDate} has been canceled. You have been refunded $${ticketPrice}. 
+        While we're sad to see you go, remember that there are always more exciting events waiting for you on our website. We look
+        forward to welcoming you back soon!`
       });
       console.log(emailResponse);
       console.log('Booking canceled successfully.');
@@ -116,6 +118,7 @@ const MyAccount = () => {
         ...bookingWithEventDetails,
         eventName: eventDetails.eventName,
         eventDate: eventDetails.eventDate,
+        ticketPrice: eventDetails.ticketPrice,
       });
     } else {
       console.error('No event details found for booking:', bookingID);
@@ -155,22 +158,23 @@ const MyAccount = () => {
             })}
           </div>
         </div>
-
-      <div className="col-md-5 d-flex justify-content-center">
+        <div className="col-md-5 d-flex justify-content-center">
         <Calendar
           style={{ width: '100%' }}
           tileContent={({ date, view }) => {
             const event = calendarEvents.find(e => new Date(e.date).toDateString() === date.toDateString());
             return view === 'month' && event ? (
-              <p style={{ backgroundColor: 'purple', color: '#fff', padding: '5px', borderRadius: '4px', textAlign: 'center' }}>
-                {event.title}
-              </p>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'purple', borderRadius: '4px' }}></div>
+                <p style={{ position: 'relative', zIndex: '1', color: '#fff', padding: '5px', borderRadius: '4px', textAlign: 'center', fontSize: '7px', lineHeight: '1.4', margin: '0' }}>
+                  {event.title}
+                </p>
+              </div>
             ) : null;
           }}
         />
       </div>
     </div>
-  
       {selectedBooking && (
         <Modal show={true} onHide={handleCloseModal}>
           <Modal.Header closeButton>
@@ -186,7 +190,7 @@ const MyAccount = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={() => handleDeleteBooking(selectedBooking.bookingID, selectedBooking.eventName, new Date(selectedBooking.eventDate).toLocaleDateString())} style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '5px' }}>Cancel Booking</button>
+            <button onClick={() => handleDeleteBooking(selectedBooking.bookingID, selectedBooking.eventName, new Date(selectedBooking.eventDate).toLocaleDateString(), selectedBooking.paymentAmount)} style={{ backgroundColor: 'red', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '5px' }}>Cancel Booking</button>
           </Modal.Footer>
         </Modal>
       )}
