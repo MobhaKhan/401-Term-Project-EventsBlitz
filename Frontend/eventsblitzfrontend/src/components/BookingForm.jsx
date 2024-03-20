@@ -29,22 +29,22 @@ const BookingForm = () => {
         cvv: '',
     });
   
-    const CustomDateInput = ({ value, onClick }) => (
-        <button
-            className="example-custom-input"
-            onClick={onClick}
-            style={{
-            border: '1px solid #ced4da',
-            padding: '.375rem .75rem',
-            borderRadius: '.25rem',
-            color: '#495057',
-            backgroundColor: 'white',
-            cursor: 'pointer'
-            }}
-        >
-            {value}
-        </button>
-    );
+const CustomDateInput = ({ value, onClick }) => (
+  <Button
+    className="example-custom-input"
+    onClick={onClick}
+    style={{
+      border: '1px solid #ced4da',
+      padding: '.375rem .75rem',
+      borderRadius: '.25rem',
+      color: '#495057',
+      backgroundColor: 'white',
+      cursor: 'pointer'
+    }}
+  >
+    {value}
+  </Button>
+);
 
     useEffect(() => {
         const fetchSeatsAndBookings = async () => {
@@ -178,20 +178,7 @@ const BookingForm = () => {
         );
     } 
 
-    const renderInputField = (label, value, setValue, error) => (
-        <Form.Group controlId={`form${label}`} className="mb-3">
-            <Form.Label>{label}</Form.Label>
-            <Form.Control 
-                type="text" 
-                value={value} 
-                isInvalid={formValidated && error}
-                onChange={e => setValue(e.target.value)} 
-            />
-            <Form.Control.Feedback type="invalid">
-                {error}
-            </Form.Control.Feedback>
-        </Form.Group>
-    );
+    
 
     return (
         <Container>
@@ -257,20 +244,20 @@ const BookingForm = () => {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Row>
-                        <Form.Group controlId="expiryDate" className="mb-3">
-                            <Form.Label>Expiry Date</Form.Label>
-                            <Col sm="8">
-                                <DatePicker
-                                    selected={expiryDate}
-                                    onChange={date => setExpiryDate(date)}
-                                    dateFormat="MM/yyyy"
-                                    showMonthYearPicker
-                                    customInput={<CustomDateInput />}
-                                    placeholderText="MM/YYYY"
-                                    required
-                                />
-                            </Col>
-                        </Form.Group>
+                    <Form.Group controlId="expiryDate" className="mb-3">
+      <Form.Label>Expiry Date</Form.Label>
+      <Col sm="8">
+        <DatePicker
+          selected={expiryDate}
+          onChange={date => setExpiryDate(date)}
+          dateFormat="MM/yyyy"
+          showMonthYearPicker
+          customInput={<CustomDateInput />}
+          placeholderText="MM/YYYY"
+          required
+        />
+      </Col>
+    </Form.Group>
                         <Col>
                         <Form.Group controlId="cvv" className="mb-3">
                             <Form.Label>CVV</Form.Label>
