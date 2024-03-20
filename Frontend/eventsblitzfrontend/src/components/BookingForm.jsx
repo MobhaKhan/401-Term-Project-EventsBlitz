@@ -245,19 +245,19 @@ const CustomDateInput = ({ value, onClick }) => (
                     </Form.Group>
                     <Row>
                     <Form.Group controlId="expiryDate" className="mb-3">
-      <Form.Label>Expiry Date</Form.Label>
-      <Col sm="8">
-        <DatePicker
-          selected={expiryDate}
-          onChange={date => setExpiryDate(date)}
-          dateFormat="MM/yyyy"
-          showMonthYearPicker
-          customInput={<CustomDateInput />}
-          placeholderText="MM/YYYY"
-          required
-        />
-      </Col>
-    </Form.Group>
+                        <Form.Label>Expiry Date</Form.Label>
+                        <Col sm="8">
+                            <DatePicker
+                            selected={expiryDate}
+                            onChange={date => setExpiryDate(date)}
+                            dateFormat="MM/yyyy"
+                            showMonthYearPicker
+                            customInput={<CustomDateInput />}
+                            placeholderText="MM/YYYY"
+                            required
+                            />
+                        </Col>
+                        </Form.Group>
                         <Col>
                         <Form.Group controlId="cvv" className="mb-3">
                             <Form.Label>CVV</Form.Label>
