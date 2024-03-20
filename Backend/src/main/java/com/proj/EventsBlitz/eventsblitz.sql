@@ -20,6 +20,8 @@ CREATE TABLE User (
 INSERT INTO User (UserName, UserAddress, Email, UserType) VALUES
 ('John Doe', '123 Main St', 'john.doe@example.com', 'Guest'),
 ('Mobha Khan', '502 Main St', 'khan.mobha@gmail.com', 'Admin'),
+('Fabiha Tuheen', '668 Main St', 'fabiha.neera@gmail.com', 'Admin'),
+('Faria Mobeen', '5656 Main St', 'faria.mobeen@gmail.com', 'Admin'),
 ('Alice Smith', '456 Oak St', 'alice.smith@example.com', 'Registered'),
 ('Bob Johnson', '789 Elm St', 'bob.johnson@example.com', 'Guest');
 
