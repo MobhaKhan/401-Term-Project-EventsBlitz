@@ -222,22 +222,30 @@ const Login = () => {
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control type="email" placeholder="Enter email" value={email} onChange={handleEmailChange} />
                             </Form.Group>
+                            <br/>
                             <Form.Group controlId="formUsername">
                                 <Form.Label>Username</Form.Label>
                                 <Form.Control type="text" placeholder="Enter username" value={username} onChange={handleUsernameChange} />
                             </Form.Group>
+                            <br/>
+
                             <Form.Group controlId="formPassword">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="Enter password" value={password} onChange={handlePasswordChange} />
                             </Form.Group>
+                            <br/>
+
                             <Form.Group controlId="formAddress">
                                 <Form.Label>Address</Form.Label>
                                 <Form.Control type="text" placeholder="Enter address" value={address} onChange={handleAddressChange} />
                             </Form.Group>
+                            <br/>
+
                             <Form.Group controlId="formCreditCard">
                                 <Form.Label>Credit Card</Form.Label>
                                 <Form.Control type="text" placeholder="Enter credit card" value={creditCard} onChange={handleCreditCardChange} />
                             </Form.Group>
+                     
 
                         </Form>
                     </Modal.Body>

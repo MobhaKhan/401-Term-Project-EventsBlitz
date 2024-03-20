@@ -48,14 +48,14 @@ const AdminLogin = () => {
     return (
         <Form className="container-fluid" onSubmit={handleLogin}>
             {error && <Alert variant="danger">{error}</Alert>}
-            <Form.Group className="row justify-content-lg-center">
-                <Form.Label className="col col-sm-2">Email:</Form.Label>
-                <Form.Control className="col col-sm-2" type="email" value={email} onChange={handleEmailChange} />
-            </Form.Group>
-            <Form.Group className="row justify-content-lg-center">
-                <Form.Label className="col col-sm-2">Password:</Form.Label>
-                <Form.Control className="col col-sm-2" type="password" value={password} onChange={handlePasswordChange} />
-            </Form.Group>
+            <Form.Group className="mb-3">
+                        <Form.Label>Email</Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" value={email} onChange={handleEmailChange} />
+                        </Form.Group>
+                        <Form.Group controlId="formPassword" className="mb-3">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Enter password" value={password} onChange={handlePasswordChange} />
+                        </Form.Group>
             <Form.Group className="row justify-content-md-center p-4">
                 <Button className="col col-sm-2" variant="secondary" type="submit">Login</Button>
             </Form.Group>

@@ -48,12 +48,19 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
     };
 
     const handleBookEventClick = () => {
-        if (sessionStorage.getItem('isAuthenticated') === 'true') {
-            navigateToBooking(selectedEvent);
+        const userType = sessionStorage.getItem('type');
+        if (userType === 'Admin') {
+            // If user type is Admin, show an alert or perform any other action
+            alert('You are an Admin and cannot book events. Please sign in as a registered user to book events.');
         } else {
-            setShowLoginAlert(true);
+            if (sessionStorage.getItem('isAuthenticated') === 'true') {
+                navigateToBooking(selectedEvent);
+            } else {
+                setShowLoginAlert(true);
+            }
         }
     };
+    
 
     const handleCloseModal = () => {
         setSelectedEvent(null);
