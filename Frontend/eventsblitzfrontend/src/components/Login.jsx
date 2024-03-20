@@ -144,8 +144,7 @@ const Login = () => {
                 //set the session storage variable for the user's email
                 sessionStorage.setItem('email', email);
                 sessionStorage.setItem('type', 'Registered')
-                //redirect to home page
-                window.location.href = '/';
+                setShowRegistrationModal(false); // Close the registration modal
             }
         } catch (error) {
             console.log(error);

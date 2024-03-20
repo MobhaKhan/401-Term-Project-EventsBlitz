@@ -19,6 +19,15 @@ const BookingForm = () => {
     const [creditCard, setCreditCard] = useState('');
     const [expiryDate, setExpiryDate] = useState(new Date());
     const [insuranceSelected, setInsuranceSelected] = useState(false);
+    const [formValidated, setFormValidated] = useState(false);
+    const [fullName, setFullName] = useState('');
+    const [cvv, setCvv] = useState('');
+    const [formErrors, setFormErrors] = useState({
+        fullName: '',
+        creditCard: '',
+        expiryDate: '',
+        cvv: '',
+    });
   
     const CustomDateInput = ({ value, onClick }) => (
         <button
@@ -71,9 +80,16 @@ const BookingForm = () => {
     }
 
     const handleBooking = async (e) => {
-        if (!creditCard) {
-            alert('Please enter your credit card information.');
-            return;
+        if (!fullName || !creditCard || !cvv) {
+            setFormValidated(true); // Triggers form validation
+            // Update formErrors state based on the missing fields
+            setFormErrors({
+                fullName: !fullName ? 'Full name is required' : '',
+                creditCard: !creditCard ? 'Credit card number is required' : '',
+                cvv: !cvv ? 'CVV is required' : '',
+                // Additional fields can be validated here
+            });
+            return; // Prevent form submission if validation fails
         }
         e.preventDefault();
         setIsLoading(true); // Start loading
@@ -162,6 +178,21 @@ const BookingForm = () => {
         );
     } 
 
+    const renderInputField = (label, value, setValue, error) => (
+        <Form.Group controlId={`form${label}`} className="mb-3">
+            <Form.Label>{label}</Form.Label>
+            <Form.Control 
+                type="text" 
+                value={value} 
+                isInvalid={formValidated && error}
+                onChange={e => setValue(e.target.value)} 
+            />
+            <Form.Control.Feedback type="invalid">
+                {error}
+            </Form.Control.Feedback>
+        </Form.Group>
+    );
+
     return (
         <Container>
             <Row className="justify-content-center bg-primary-subtle p-5 rounded-5 mt-5">
@@ -198,14 +229,32 @@ const BookingForm = () => {
                     <Modal.Title>Payment Information</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
+                    <Form noValidate validated={formValidated}>
                     <Form.Group controlId="fullName" className="mb-3">
                         <Form.Label>Full Name</Form.Label>
-                        <Form.Control type="text" required />
+                        <Form.Control 
+                            type="text" 
+                            required 
+                            value={fullName}
+                            onChange={e => setFullName(e.target.value)}
+                            isInvalid={formValidated && !fullName}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a full name.
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="creditCardNumber" className="mb-3">
                         <Form.Label>Credit Card Number</Form.Label>
-                        <Form.Control type="text" value={creditCard} onChange={e => setCreditCard(e.target.value)} required />
+                        <Form.Control 
+                            type="text" 
+                            required 
+                            value={creditCard} 
+                            onChange={e => setCreditCard(e.target.value)} 
+                            isInvalid={formValidated && !creditCard}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a credit card number.
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Row>
                         <Form.Group controlId="expiryDate" className="mb-3">
@@ -218,13 +267,24 @@ const BookingForm = () => {
                                     showMonthYearPicker
                                     customInput={<CustomDateInput />}
                                     placeholderText="MM/YYYY"
+                                    required
                                 />
                             </Col>
                         </Form.Group>
                         <Col>
                         <Form.Group controlId="cvv" className="mb-3">
                             <Form.Label>CVV</Form.Label>
-                            <Form.Control type="text" required style={{ width: '80px' }}/>
+                            <Form.Control 
+                                type="text" 
+                                required 
+                                value={cvv} 
+                                onChange={e => setCvv(e.target.value)}
+                                isInvalid={formValidated && !cvv}
+                                style={{ width: '80px' }}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                Please provide a CVV.
+                            </Form.Control.Feedback>
                         </Form.Group>
                         </Col>
                     </Row>
