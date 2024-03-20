@@ -194,6 +194,7 @@ const Login = () => {
                     <div className="col-md-6" style={{...columnStyle, ...borderRightStyle}}>
                     <Form>
                         <Form.Group controlId="formEmail" className="mb-3">
+                        <Form.Label>Email</Form.Label>
                             <Form.Control type="email" placeholder="Enter email" value={email} onChange={handleEmailChange} />
                         </Form.Group>
                         <Form.Group controlId="formPassword" className="mb-3">
