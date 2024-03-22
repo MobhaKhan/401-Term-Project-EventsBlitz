@@ -4,9 +4,9 @@ import com.proj.EventsBlitz.models.Seat;
 import com.proj.EventsBlitz.repositories.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.List;
-
 @Service
 public class SeatService {
 
@@ -27,5 +27,9 @@ public class SeatService {
 
     public List<Seat> getSeatsByPriceAndEventID(BigDecimal price, int eventID) {
         return seatRepository.findByPriceAndEvent_EventID(price, eventID);
+    }
+
+    public Seat addSeat(Seat seat) {
+        return seatRepository.save(seat);
     }
 }

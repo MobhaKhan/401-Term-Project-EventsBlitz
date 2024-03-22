@@ -25,10 +25,15 @@ const AdminPage = () => {
         console.log("Deleting event:", event);
     };
 
+    const handleAddSeats = () => {
+        // Logic to handle deletion of event
+        console.log("adding seats...");
+    };
+
     return (
         <div className="bg-white rounded-5 p-3">
             <h1>Admin Page</h1>
-            <SearchEvents isAdmin={true} onCreateEvent={handleCreateEvent} onDeleteEvent={handleDeleteEvent} />
+            <SearchEvents isAdmin={true} onCreateEvent={handleCreateEvent} onDeleteEvent={handleDeleteEvent} onAddSeat={handleAddSeats}/>
         </div>
     );
 };

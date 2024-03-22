@@ -1,4 +1,3 @@
-// SearchEvents.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
@@ -22,6 +21,14 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
         totalTickets: '',
         availableTickets: '',
         imageUrl: ''
+    });
+    const [showAddSeatForm, setShowAddSeatForm] = useState(false);
+    const [newEventID, setNewEventID] = useState(null); // State to store the new event ID after creation
+    const [addSeatFormData, setAddSeatFormData] = useState({
+        seatLetterLabel: '', // Starting letter label for seats
+        typeOfSeat: '',
+        price: '',
+        numberOfSeats: 0
     });
 
     useEffect(() => {
@@ -50,7 +57,6 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
     const handleBookEventClick = () => {
         const userType = sessionStorage.getItem('type');
         if (userType === 'Admin') {
-            // If user type is Admin, show an alert or perform any other action
             alert('You are an Admin and cannot book events. Please sign in as a registered user to book events.');
         } else {
             if (sessionStorage.getItem('isAuthenticated') === 'true') {
@@ -61,6 +67,9 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
         }
     };
     
+    const handleAddSeats = () => {
+        setShowAddSeatForm(true);
+    };
 
     const handleCloseModal = () => {
         setSelectedEvent(null);
@@ -79,11 +88,22 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
         });
     };
 
+    const handleAddSeatChange = (e) => {
+        const { name, value } = e.target;
+        setAddSeatFormData({
+            ...addSeatFormData,
+            [name]: value
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/events/createEvent', newEventFormData);
-            setShowCreateEventForm(false);
+            // Step 1: Create the event and get the response
+            const newEventResponse = await api.post('/events/createEvent', newEventFormData);
+            setNewEventID(newEventResponse.data.eventID); // Store the new event ID
+            setShowCreateEventForm(false); // Close the create event modal
+            // Clear form data
             setNewEventFormData({
                 eventName: '',
                 eventDescription: '',
@@ -95,25 +115,49 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                 availableTickets: '',
                 imageUrl: ''
             });
-            fetchEvents(); // Refresh the events list after creating a new event
+            fetchEvents(); // Refresh the events list
         } catch (error) {
-            console.error('Error creating event:', error);
+            console.error('Error creating event or seats:', error);
         }
     };
+    
 
     const handleDeleteEvent = async (eventId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this event?");
         if (confirmDelete) {
             try {
                 await api.delete(`/events/${eventId}`);
-                setSelectedEvent(null); // Reset selectedEvent state
-                fetchEvents(); // Refresh the events list after deleting an event
+                setSelectedEvent(null);
+                fetchEvents();
             } catch (error) {
                 console.error('Error deleting event:', error);
             }
         }
     };
-    
+
+    const handleAddSeatsSubmit = async (e) => {
+        e.preventDefault();
+        if (!newEventID) {
+            console.error('No new event ID to add seats to.');
+            return;
+        }
+
+        try {
+            let currentSeatLetter = addSeatFormData.seatLetterLabel;
+            for (let i = 1; i <= addSeatFormData.numberOfSeats; i++) {
+                const seatData = {
+                    seatNumber: `${currentSeatLetter}${i}`,
+                    event: { eventID: newEventID },
+                    seatType: addSeatFormData.typeOfSeat,
+                    price: addSeatFormData.price
+                };
+                await api.post('/seats/addSeat', seatData);
+            }
+            setShowAddSeatForm(false); // Close the add seats modal
+        } catch (error) {
+            console.error('Error adding seats:', error);
+        }
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -190,6 +234,41 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                     </div>
                 </div>
             )}
+            {showAddSeatForm && (
+                <div className="modal fade show" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Add Seats</h5>
+                                <button type="button" className="close" onClick={() => setShowAddSeatForm(false)}>
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleAddSeatsSubmit}>
+                                    <div className="form-group">
+                                        <label>Seat Letter Label</label>
+                                        <input type="text" className="form-control" name="seatLetterLabel" value={addSeatFormData.seatLetterLabel} onChange={handleAddSeatChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Type of Seat</label>
+                                        <input type="text" className="form-control" name="typeOfSeat" value={addSeatFormData.typeOfSeat} onChange={handleAddSeatChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Price</label>
+                                        <input type="number" className="form-control" name="price" value={addSeatFormData.price} onChange={handleAddSeatChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Number of Seats</label>
+                                        <input type="number" className="form-control" name="numberOfSeats" value={addSeatFormData.numberOfSeats} onChange={handleAddSeatChange} min="1" required />
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="container-lg p-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', overflowY: 'auto', maxHeight: '600px' }}>
                 {events.map((event) => (
                     <div className="card" key={event.eventID} onClick={() => handleEventClick(event)} style={{ cursor: 'pointer' }}>
@@ -198,7 +277,10 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                             <h5 className="card-title">{event.eventName}</h5>
                             <p className="card-text">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
                             {isAdmin && (
-                                <button onClick={() => handleDeleteEvent(event.eventID)} className="btn btn-danger">Delete</button>
+                                <div>
+                                    <button onClick={() => handleDeleteEvent(event.eventID)} className="btn btn-danger">Delete</button>
+                                    <button onClick={handleAddSeats} className="btn btn-primary">Add Seats</button>
+                                </div>
                             )}
                         </div>
                     </div>
