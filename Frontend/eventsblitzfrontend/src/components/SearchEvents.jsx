@@ -30,6 +30,11 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
         price: '',
         numberOfSeats: 0
     });
+    const seatTypesWithPrices = {
+        "Regular": 50,
+        "Business-Class": 100,
+        "Comfort": 75
+      };
 
     useEffect(() => {
         fetchEvents();
@@ -66,9 +71,17 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
             }
         }
     };
+
+    useEffect(() => {
+        if (newEventID !== null) {
+          console.log("New Event ID is now set to:", newEventID);
+        }
+    }, [newEventID]);
     
-    const handleAddSeats = () => {
-        setShowAddSeatForm(true);
+    const handleAddSeats = (e, eventID) => {
+        e.stopPropagation(); // Prevent event from bubbling up
+        setNewEventID(eventID); 
+        setShowAddSeatForm(true); 
     };
 
     const handleCloseModal = () => {
@@ -99,9 +112,8 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Step 1: Create the event and get the response
             const newEventResponse = await api.post('/events/createEvent', newEventFormData);
-            setNewEventID(newEventResponse.data.eventID); // Store the new event ID
+            console.log(newEventResponse.data.eventID);
             setShowCreateEventForm(false); // Close the create event modal
             // Clear form data
             setNewEventFormData({
@@ -122,10 +134,11 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
     };
     
 
-    const handleDeleteEvent = async (eventId) => {
+    const handleDeleteEvent = async (e, eventId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this event?");
         if (confirmDelete) {
             try {
+                e.stopPropagation(); // Prevent event from bubbling up
                 await api.delete(`/events/${eventId}`);
                 setSelectedEvent(null);
                 fetchEvents();
@@ -133,6 +146,15 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                 console.error('Error deleting event:', error);
             }
         }
+    };
+
+    const handleTypeOfSeatChange = (e) => {
+        const selectedType = e.target.value;
+        setAddSeatFormData({
+          ...addSeatFormData,
+          typeOfSeat: selectedType,
+          price: seatTypesWithPrices[selectedType], // Automatically set the price based on seat type
+        });
     };
 
     const handleAddSeatsSubmit = async (e) => {
@@ -236,37 +258,42 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
             )}
             {showAddSeatForm && (
                 <div className="modal fade show" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                    <div className="modal-dialog modal-dialog-centered" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Add Seats</h5>
-                                <button type="button" className="close" onClick={() => setShowAddSeatForm(false)}>
-                                    <span>&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <form onSubmit={handleAddSeatsSubmit}>
-                                    <div className="form-group">
-                                        <label>Seat Letter Label</label>
-                                        <input type="text" className="form-control" name="seatLetterLabel" value={addSeatFormData.seatLetterLabel} onChange={handleAddSeatChange} required />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Type of Seat</label>
-                                        <input type="text" className="form-control" name="typeOfSeat" value={addSeatFormData.typeOfSeat} onChange={handleAddSeatChange} required />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Price</label>
-                                        <input type="number" className="form-control" name="price" value={addSeatFormData.price} onChange={handleAddSeatChange} required />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Number of Seats</label>
-                                        <input type="number" className="form-control" name="numberOfSeats" value={addSeatFormData.numberOfSeats} onChange={handleAddSeatChange} min="1" required />
-                                    </div>
-                                    <button type="submit" className="btn btn-primary">Submit</button>
-                                </form>
-                            </div>
-                        </div>
+                <div className="modal-dialog modal-dialog-centered" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">Add Seats</h5>
+                        <button type="button" className="close" onClick={() => setShowAddSeatForm(false)}>
+                        <span>&times;</span>
+                        </button>
                     </div>
+                    <div className="modal-body">
+                        <form onSubmit={handleAddSeatsSubmit}>
+                        <div className="form-group">
+                            <label>Seat Letter Label</label>
+                            <input type="text" className="form-control" name="seatLetterLabel" value={addSeatFormData.seatLetterLabel} onChange={handleAddSeatChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Type of Seat</label>
+                            <select className="form-control" name="typeOfSeat" value={addSeatFormData.typeOfSeat} onChange={handleTypeOfSeatChange} required>
+                            <option value="">Select Seat Type</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Business-Class">Business-Class</option>
+                            <option value="Comfort">Comfort</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Price</label>
+                            <input type="number" className="form-control" name="price" value={addSeatFormData.price} readOnly />
+                        </div>
+                        <div className="form-group">
+                            <label>Number of Seats</label>
+                            <input type="number" className="form-control" name="numberOfSeats" value={addSeatFormData.numberOfSeats} onChange={handleAddSeatChange} min="1" required />
+                        </div>
+                        <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    </div>
+                </div>
                 </div>
             )}
             <div className="container-lg p-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', overflowY: 'auto', maxHeight: '600px' }}>
@@ -278,8 +305,8 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                             <p className="card-text">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
                             {isAdmin && (
                                 <div>
-                                    <button onClick={() => handleDeleteEvent(event.eventID)} className="btn btn-danger">Delete</button>
-                                    <button onClick={handleAddSeats} className="btn btn-primary">Add Seats</button>
+                                    <button onClick={(e) => handleDeleteEvent(e, event.eventID)} className="btn btn-danger">Delete</button>
+                                    <button onClick={(e) => handleAddSeats(e, event.eventID)} className="btn btn-primary">Add Seats</button>
                                 </div>
                             )}
                         </div>
@@ -303,7 +330,7 @@ const SearchEvents = ({ isAdmin, onCreateEvent }) => {
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Date: </span>{new Date(selectedEvent.eventDate).toLocaleDateString()}<br />
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Time: </span>{selectedEvent.eventTime}<br />
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Location: </span>{selectedEvent.eventLocation}<br />
-                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Ticket Price: </span>{selectedEvent.ticketPrice}<br />
+                                    <span style={{ color: 'purple', fontWeight: 'bold' }}>Ticket Price: </span>${selectedEvent.ticketPrice}.00<br />
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Total Tickets: </span>{selectedEvent.totalTickets}<br />
                                     <span style={{ color: 'purple', fontWeight: 'bold' }}>Available Tickets: </span>{selectedEvent.availableTickets}
                                 </p>

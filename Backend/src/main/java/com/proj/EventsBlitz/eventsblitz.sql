@@ -102,7 +102,8 @@ CREATE TABLE Event (
 INSERT INTO Event (event_name, event_description, event_date, event_time, event_location, ticket_price, total_tickets, available_tickets, image_url) VALUES
 ('Tech Summit', 'Annual tech conference showcasing the latest advancements in technology and innovation. Join us for insightful talks, networking opportunities, and more.', '2024-05-15', '09:00:00', 'Convention Center', 100.00, 500, 500, 'https://news.microsoft.com/wp-content/uploads/prod/sites/427/2017/02/1DX20184.jpg'),
 ('Music Festival', 'Experience three days of non-stop music and entertainment at our annual music festival. Featuring top artists from around the world, food vendors, and fun activities for all ages.', '2024-07-20', '17:00:00', 'Outdoor Arena', 75.00, 1000, 1000, 'https://a.cdn-hotels.com/gdcs/production109/d1730/0e79ce94-530b-408e-af0f-6550f61d621c.jpg'),
-('Art Exhibition', 'Discover the beauty of modern art at our art exhibition. Explore a diverse collection of contemporary artworks, meet the artists, and immerse yourself in creativity.', '2024-06-10', '10:00:00', 'Art Gallery', 50.00, 200, 200, 'https://freshmindmag.com/wp-content/uploads/2023/04/pexels-darya-sannikova-1671014.jpg');
+('Art Exhibition', 'Discover the beauty of modern art at our art exhibition. Explore a diverse collection of contemporary artworks, meet the artists, and immerse yourself in creativity.', '2024-06-10', '10:00:00', 'Art Gallery', 50.00, 200, 200, 'https://freshmindmag.com/wp-content/uploads/2023/04/pexels-darya-sannikova-1671014.jpg'),
+(' Royal Iftar: A Luxurious Celebration', 'Join us for an exquisite Iftar experience filled with lavish dishes and traditional charm. Indulge in a regal feast fit for royalty. Book your spot now for an unforgettable evening of elegance and camaraderie.', '2024-04-08', '18:00:00', 'Rio Banquet Hall', 25.00, 30, 30, 'https://eglobaltravelmedia.com.au/wp-content/uploads/2024/03/QE2-Iftar-Al-Malika-4.jpg');
 
 -- Create Seat Table
 DROP TABLE IF EXISTS Seat;
@@ -111,8 +112,8 @@ CREATE TABLE Seat (
     EventID INT NOT NULL,
     SeatType VARCHAR(20) NOT NULL, -- Regular, Business-Class, Comfort, etc.
     Price DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (SeatNumber, EventID), -- Composite key
-    FOREIGN KEY (EventID) REFERENCES Event(EventID)
+    PRIMARY KEY (SeatNumber),
+    FOREIGN KEY (EventID) REFERENCES Event(EventID) ON DELETE CASCADE
 );
 
 -- Inserting Seat data
@@ -186,8 +187,8 @@ CREATE TABLE Booking (
     PaymentAmount DECIMAL(10, 2) NOT NULL,
     IsCancelled BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (UserID) REFERENCES User(UserID),
-    FOREIGN KEY (EventID) REFERENCES Event(EventID),
-    FOREIGN KEY (SeatNumber) REFERENCES Seat(SeatNumber)
+    FOREIGN KEY (EventID) REFERENCES Event(EventID) ON DELETE CASCADE,
+    FOREIGN KEY (SeatNumber) REFERENCES Seat(SeatNumber) ON DELETE CASCADE
 );
 
 -- Inserting Booking data

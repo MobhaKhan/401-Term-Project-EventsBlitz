@@ -10,6 +10,7 @@ import { BsCheckCircle } from 'react-icons/bs';
 const BookingForm = () => {
     const location = useLocation();
     const event = location.state.event;
+    const [currentEvent, setCurrentEvent] = useState({});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedSeats, setSelectedSeats] = useState([]);
@@ -49,9 +50,10 @@ const CustomDateInput = ({ value, onClick }) => (
     useEffect(() => {
         const fetchSeatsAndBookings = async () => {
             try {
-                const [bookingsResponse, seatsResponse] = await Promise.all([
+                const [bookingsResponse, seatsResponse, eventDetailResponse] = await Promise.all([
                     api.get(`/bookings/getAllBookings`),
-                    api.get(`/seats/byEventID/${event.eventID}`)
+                    api.get(`/seats/byEventID/${event.eventID}`),
+                    api.get(`/events/${event.eventID}`) 
                 ]);
 
                 const bookings = bookingsResponse.data;
@@ -60,6 +62,8 @@ const CustomDateInput = ({ value, onClick }) => (
                 setBookedSeats(bookedSeats);
 
                 setSeats(seatsResponse.data);
+
+                setCurrentEvent(eventDetailResponse.data);
             } catch (error) {
                 console.log(error);
             }
@@ -104,7 +108,7 @@ const CustomDateInput = ({ value, onClick }) => (
                     eventID: event.eventID,
                     seatNumber: seatNumber,
                     insuranceSelected: insuranceSelected,
-                    paymentAmount: seats.find(seat => seat.seatNumber === seatNumber).price,
+                    paymentAmount: seats.find(seat => seat.seatNumber === seatNumber).price + currentEvent.ticketPrice,
                     isCancelled: false
                 });
                 console.log(response);
