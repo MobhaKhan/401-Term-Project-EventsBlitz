@@ -1,0 +1,13 @@
+runtime: java
+env: flex
+runtime_config:
+  jdk: openjdk17
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+  redirect_http_response_code: 301
+
+env_variables:
+  SPRING_PROFILES_ACTIVE: "gcp"
