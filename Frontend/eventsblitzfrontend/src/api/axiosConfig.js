@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-    baseURL: 'http://localhost:8080/api'
+    baseURL: 'https://spatial-dryad-381108.uw.r.appspot.com/api'
 });
