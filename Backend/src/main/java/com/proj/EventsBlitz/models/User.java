@@ -44,5 +44,15 @@ public class User {
         return this.UserID;
     }
 
+    public void setUserType(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setUserType'");
+    }
+
+    public void setEmail(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setEmail'");
+    }
+
     // getters and setters, constructors
 }
