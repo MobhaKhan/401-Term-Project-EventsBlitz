@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/admins")
 public class AdminController {
 
@@ -40,4 +40,3 @@ public class AdminController {
     }
 
 }
-
