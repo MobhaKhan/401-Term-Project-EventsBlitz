@@ -65,13 +65,6 @@ describe("BookingForm Component", () => {
       route: "/booking?event=1",
       state: { event: mockEvent },
     });
-    ////////////////// THIS SHT MAKES THIS TEST FAIL! REMOVE BEFORE MERGING BRANCH/////////////////////
-
-    // Ensure event details are displayed
-    // expect(await screen.findByText(mockEvent.eventName)).toBeInTheDocument();
-    // expect(
-    //   screen.getByText(new RegExp(mockEvent.eventLocation))
-    // ).toBeInTheDocument();
 
     // Check if seats are rendered
     await waitFor(() =>
@@ -79,23 +72,25 @@ describe("BookingForm Component", () => {
     );
   });
 
-  //   test("allows seat selection and shows payment modal", async () => {
-  //     renderWithRouter(<BookingForm />, {
-  //       route: "/booking?event=1",
-  //       state: { event: mockEvent },
-  //     });
-
-  //     // Wait for seats to be loaded and click on a seat
-  //     const seatButtons = await screen.findAllByRole("button", { name: /S\d/ });
-  //     fireEvent.click(seatButtons[0]);
-
-  //     // Proceed to payment
-  //     fireEvent.click(screen.getByText(/Proceed to Payment/));
-  //     expect(
-  //       await screen.findByRole("dialog", { name: "Payment Information" })
-  //     ).toBeInTheDocument();
-  //   });
-
+  test("allows seat selection and shows payment modal", async () => {
+    renderWithRouter(<BookingForm />, {
+      route: "/booking?event=1",
+      state: { event: mockEvent },
+    });
+  
+    // Wait for seats to be loaded and click on a seat
+    const seatButtons = await screen.findAllByRole("button", { name: /S\d/ });
+    fireEvent.click(seatButtons[0]);
+  
+    // Proceed to payment
+    fireEvent.click(screen.getByText(/Proceed to Payment/));
+  
+    // Use waitFor instead of await for screen to update
+    waitFor(() => {
+      expect(screen.getByRole("dialog", { name: "Payment Information" })).toBeInTheDocument();
+    });
+  });
+  
   test("validates form inputs before confirming booking", async () => {
     renderWithRouter(<BookingForm />, {
       route: "/booking?event=1",
