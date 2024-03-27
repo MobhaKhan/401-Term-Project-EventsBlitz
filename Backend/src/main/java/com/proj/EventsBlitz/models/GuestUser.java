@@ -33,4 +33,9 @@ public class GuestUser {
         this.UserID = userID;
     }
 
+    public Integer getId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+    }
+
 }

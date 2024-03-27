@@ -100,4 +100,9 @@ public class Booking {
                 ", isCancelled=" + isCancelled +
                 '}';
     }
+
+    public Object EventID() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'EventID'");
+    }
 }

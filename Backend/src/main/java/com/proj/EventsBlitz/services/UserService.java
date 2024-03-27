@@ -20,8 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     @Autowired
     private RegisteredUserRepository registeredUserRepository;
-    @Autowired
-    private GuestUserRepository guestUserRepository;
+    @Autowired GuestUserRepository guestUserRepository;
     @Autowired
     private AdminRepository adminRepository;
 
