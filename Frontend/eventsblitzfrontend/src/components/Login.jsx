@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import api from '../api/axiosConfig'
 import AdminLogin from './AdminLogin';
+import { encrypt, decrypt } from 'n-krypta';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -97,8 +98,11 @@ const Login = () => {
             };
 
             // Check if the entered email and password match any user's credentials
-            const matchedUser = registeredUsersOnly.find(user => user.Email === email && user.Password === password);
-            if (matchedUser) {
+            
+            const matchedUser = registeredUsersOnly.find(user => user.Email === email );
+            const decryptedPassword = decrypt(matchedUser.Password, 'decryptionKey');
+            console.log(decryptedPassword);
+            if (matchedUser  && decryptedPassword == password) {
                 // Display success popup
                 console.log(JSON.stringify(combinedData));
                 setIsAuthenticated(true);
@@ -127,12 +131,14 @@ const Login = () => {
 
     const handleConfirmRegistration = async () => {
         try {
+            const encrypted = encrypt(password, 'decryptionKey');
+            console.log(encrypted);
             const response = await api.post('/users/createRegisteredUser', {
                 username: username,
                 email: email,
                 address: address,
                 type: 'Registered',
-                password: password,
+                password: encrypted,
                 creditCard: creditCard
             });
 
