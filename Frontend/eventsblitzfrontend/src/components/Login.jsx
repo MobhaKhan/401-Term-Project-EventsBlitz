@@ -246,10 +246,7 @@ const Login = () => {
                             </Form.Group>
                             <br/>
 
-                            <Form.Group controlId="formCreditCard">
-                                <Form.Label>Credit Card</Form.Label>
-                                <Form.Control type="text" placeholder="Enter credit card" value={creditCard} onChange={handleCreditCardChange} />
-                            </Form.Group>
+                            
                      
 
                         </Form>

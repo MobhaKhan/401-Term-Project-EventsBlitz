@@ -84,7 +84,7 @@ const CustomDateInput = ({ value, onClick }) => (
     }
 
     const handleBooking = async (e) => {
-        if (!fullName || !creditCard || !cvv) {
+        if (!fullName || !creditCard || !cvv || creditCard.length<16) {
             setFormValidated(true); // Triggers form validation
             // Update formErrors state based on the missing fields
             setFormErrors({
